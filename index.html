@@ -1,0 +1,256 @@
+var addStars;
+var confirmTextBox;
+var confirmPasswordButton;
+var passwordLabel;
+var instructionLabel1;
+var instructionButton1;
+var instructionLabel1A;
+var instructionLabel1B;
+var textBox2;
+var instructionLabel2;
+var instructionButton2;
+var instructionLabel1C
+var redoButtonAF;
+var successLabel;
+var instructionLabel1C;
+var halel;
+var incorrectPassLabel;
+var pkt;
+
+var checkStars;
+var nameBox;
+var instructionLabel3;
+var checkName;
+var am;
+
+var amountLabel;
+var redoButtonCF;
+
+var database;
+var password;
+
+function setup(){
+    createCanvas(800,800);
+
+    database = firebase.database();
+
+     addStars = createButton('Add stars to an account');
+     addStars.position(100,100)
+     addStars.mouseClicked(addStarsF);
+
+     checkStars = createButton('Check how many stars somebody has!')
+     checkStars.position(1000,100);
+     checkStars.mouseClicked(checkStarsF)
+
+     halel = false;
+}
+
+
+
+function addStarsF(){
+    console.log("hi")
+    addStars.hide()
+    passwordLabel = createElement('p','What is the password?')
+    passwordLabel.position(100,60)
+    confirmTextBox = createInput('','password')
+    confirmTextBox.position(100,100)
+    confirmTextBox.size(100)
+
+    confirmPasswordButton = createButton('Enter')
+    confirmPasswordButton.position(100,120)
+
+
+    confirmPasswordButton.mouseClicked(validate)
+
+
+}
+
+function finder(n,nam){
+    this.key = n;
+    this.name = nam
+
+    if(this.key == 1){
+    instructionLabel1.hide()
+    instructionButton1.hide()
+    instructionLabel1B.hide()
+
+
+     instructionLabel2 = createElement('p',"How many gold stars do you want to add to "+ nam +"'s account?")
+     instructionLabel2.position(100,60)
+     textBox2.value("")
+     instructionButton2 = createButton('Enter')
+     instructionButton2.position(100,120)
+
+     var valueThing;
+
+
+     instructionButton2.mouseClicked(()=>{
+
+        database.ref("people/"+nam+"/stars").once('value').then((snapshot)=>{
+          //  console.log(snapshot.val())
+        valueThing = snapshot.val();
+        instructionLabel2.hide();
+        textBox2.hide();
+        instructionButton2.hide();
+        thing(valueThing,nam);
+        })
+
+
+    })
+
+
+    }
+
+    else if (this.key == 2){
+    database.ref("people/"+nam+"/stars").once('value').then((snapshot)=>{
+        var amount = snapshot.val();
+        writeValue(amount);
+    })
+    }
+    }
+
+
+    function validate(){
+        console.log(confirmTextBox.value())
+        passwordLabel.hide();
+        database.ref("people/samd/password").once('value').then((snapshot)=>{
+         password = snapshot.val();
+
+         thingle(password)
+        })
+        function thingle(pkt){
+        password = "lelho"
+
+        console.error("Haha get rekt JJ!")
+        if(confirmTextBox.value() == pkt){
+            console.log("unlocked!")
+            confirmPasswordButton.hide()
+            confirmTextBox.value("")
+
+            instructionLabel1 = createElement('p','type in who you want to give gold stars to, in all lowercase.')
+            instructionLabel1B = createElement('p','If there is a person with the same name, use the first initial of the last name.')
+
+            if(halel == true){
+                incorrectPassLabel.hide();
+                halel = false;
+            }
+
+            instructionLabel1.position(100,30)
+            instructionLabel1B.position(100,50)
+
+            instructionButton1 = createButton('Enter')
+            instructionButton1.position(100,120)
+            instructionButton1.size(100);
+            confirmTextBox.hide()
+            textBox2 = createInput()
+            textBox2.position(100,100)
+            instructionButton1.mouseClicked(()=>{
+
+                var name = textBox2.value()
+                console.log(name)
+                finder(1,name);
+            })
+        }
+        else if(confirmTextBox.value() !=pkt){
+            console.log("nope")
+            if(halel == false){
+                incorrectPassLabel = createElement('p','Incorrect password!')
+                incorrectPassLabel.position(100,60)
+                halel = true;
+            }
+
+        }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+function writeValue(amount){
+    amountLabel = createElement('p',"They have: "+amount + " gold stars.");
+    amountLabel.position(1000,100);
+    amountLabel.size(120);
+    redoButtonCF = createButton("Find another gold star balance!")
+    redoButtonCF.position(1000,170)
+    redoButtonCF.size(120)
+    redoButtonCF.mouseClicked(()=>{
+        document.location.reload(true);
+    })
+    }
+
+
+
+    function checkStarsF(){
+        console.log("hi")
+
+        checkStars.hide()
+        nameBox = createInput()
+        checkName = createButton('Enter')
+        instructionLabel3 = createElement('p','Enter their name, in all lowercase letters.')
+        instructionLabel1A = createElement('p','If there is a person with the same name, ')
+        instructionLabel1C = createElement('p',' use the first initial of the last name.')
+        nameBox.position(1000,100);
+        instructionLabel3.position(1000,20);
+        instructionLabel1A.position(1000,40);
+        instructionLabel1C.position(1000,60)
+        checkName.position(1000,120)
+        checkName.mouseClicked(()=>{
+            var name = nameBox.value()
+            nameBox.hide();
+            checkName.hide();
+            instructionLabel3.hide();
+            instructionLabel1A.hide();
+            instructionLabel1C.hide();
+           finder(2,name)
+        })
+
+
+
+
+    }
+    function thing(t,nam){
+        var textBox2Value = parseInt(textBox2.value())
+        console.log(textBox2Value)
+        console.log(t)
+        var amou = t+textBox2Value;
+        console.log(amou)
+        console.log(nam)
+
+    database.ref("people/"+nam).update({
+        stars:amou
+    })
+    var amo;
+
+    database.ref("people/"+nam+"/stars").once('value').then((snapshot)=>{
+    amo = snapshot.val();
+    successLabel = createElement('p','Sucess!'+nam+" now has "+snapshot.val()+" gold stars!")
+    successLabel.position(100,100)
+
+
+    })
+
+
+    redoButtonAF = createButton('Add more gold stars!')
+    redoButtonAF.position(100,170)
+    redoButtonAF.mouseClicked(()=>{
+        document.location.reload(true);
+    });
+}
