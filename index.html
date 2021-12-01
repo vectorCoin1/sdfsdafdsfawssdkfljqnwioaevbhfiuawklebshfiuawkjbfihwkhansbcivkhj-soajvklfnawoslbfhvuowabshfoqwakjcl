@@ -45,6 +45,10 @@ function setup(){
      halel = false;
 }
 
+document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
 document.onkeydown = function(e) {
   if(event.keyCode == 123) {
      return false;
@@ -62,8 +66,7 @@ document.onkeydown = function(e) {
      return false;
   }
 }
-Share
-Follow
+
 
 
 function addStarsF(){
